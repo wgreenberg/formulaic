@@ -7,12 +7,16 @@ function setup() {
     var canvasCtx = canvas.getContext('2d');
 
     var closeFn = null;
-    document.getElementById('formula').onchange = function () {
+    document.getElementById('formula').onkeypress = function (e) {
+        var key = e.keyCode || e.which;
+        if (key !== 13) // enter key
+            return
         if (closeFn) closeFn();
         closeFn = play(this.value, audioCtx, canvasCtx, canvas.width, canvas.height);
     }
     document.getElementById('stop').onclick = function () {
         if (closeFn) closeFn();
+        _currFn = null;
     }
 }
 
