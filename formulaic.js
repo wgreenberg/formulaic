@@ -3,9 +3,9 @@ var nSamples = sampleRate * 256;
 var formulas = {
     'gates': '((t >> 10) & 42) * t',
     'busy': '(t >> 4 & t * 20) | (t >> 3 & t / 1024) | (t >> 12 & t * 40)',
-    'sawtooth': '(Math.abs(t/8 % 4 - 2) - 1) * 100',
+    'sawtooth': '(Math.abs(t/4 % 4 - 2) - 1) * 100',
     'sinusoid': 'Math.sin(t/3) * 100',
-    'square': 'Math.sin(t/20) < 0 ? -100 : 100',
+    'square': 'Math.sin(t/3) < 0 ? -100 : 100',
 }
 var defaultFormula = 'busy';
 
