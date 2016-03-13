@@ -1,0 +1,29 @@
+#controls {
+    width: 100%;
+    position: absolute;
+}
+
+textarea {
+    width: 80%;
+    height: 300px;
+    opacity: 0.5;
+    color: white;
+    font-size: 18;
+    background-color: transparent;
+}
+
+.fail {
+    color: red;
+}
+.success {
+    color: green;
+}
+
+#canvas {
+    background-color: black;
+    z-index: 1;
+}
+
+body {
+    background-color: black;
+}

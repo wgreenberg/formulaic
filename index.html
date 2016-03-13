@@ -1,9 +1,15 @@
 <html>
 <script src='./formulaic.js'></script>
-<script>
-</script>
-<button id='stop'>stop</button>
-<input id='formula' value='((t >> 10) & 42) * t'>
-<br>
-<canvas height=256 width=1000 id='canvas'></canvas>
+<link rel='stylesheet' type='text/css' href='./style.css'>
+<body>
+    <div id='controls'>
+        <select id='select'></select>
+        <button id='start'>start</button>
+        <button id='stop'>stop</button>
+        <span id='status'></span>
+        <br>
+        <textarea id='formula'></textarea>
+    </div>
+    <canvas height=256 width=1000 id='canvas'></canvas>
+</body>
 </html>
