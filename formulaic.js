@@ -56,9 +56,9 @@ function test (song, statusSpan) {
     try {
         var songFn = toFn(song);
         var isNumber = (typeof songFn(0) === 'number') && !isNaN(songFn(0));
-        if (isNumber)
+        if (isNumber) {
             statusSpan.className = statusSpan.textContent = 'success';
-        else {
+        } else {
             statusSpan.className = 'fail';
             statusSpan.textContent = 'function not numeric';
         }
@@ -76,17 +76,17 @@ function toFn (song) {
 }
 
 _currFn = null;
-function play (song, aCtx, cCtx) {
-    cCtx.canvas.width = window.innerWidth;
-    cCtx.canvas.height = window.innerHeight;
+function play (song, audioCtx, canvasCtx) {
+    canvasCtx.canvas.width = window.innerWidth;
+    canvasCtx.canvas.height = window.innerHeight;
     var songFn = toFn(song);
     _currFn = songFn;
-    var buffer = aCtx.createBuffer(1, nSamples, sampleRate);
+    var buffer = audioCtx.createBuffer(1, nSamples, sampleRate);
     var data = buffer.getChannelData(0);
 
     for (var t=0; t<nSamples; t++) {
-        data[t] = songFn(t);
-        data[t] = ((data[t] % 256) / 256); // reduce to 8 bit resolution in [-1, 1]
+        data[t] = songFn(t); // get sample
+        data[t] = ((data[t] % 255) / 255); // reduce to 8 bit resolution in [-1, 1]
     }
 
     var start = null;
@@ -99,44 +99,44 @@ function play (song, aCtx, cCtx) {
             offset = 0;
             start = 0;
         }
-        rasterPaintSignal(cCtx, data, offset);
+        rasterOscilloscope(canvasCtx, data, offset);
         window.requestAnimationFrame(animationCallback);
     }
     animationCallback(0);
 
-    var source = aCtx.createBufferSource();
+    var source = audioCtx.createBufferSource();
     source.buffer = buffer;
     source.loop = true;
-    source.connect(aCtx.destination);
+    source.connect(audioCtx.destination);
     source.start();
     return function () {
         source.stop();
     }
 }
 
-// paint canvas with lines
-function rasterPaintSignal (cCtx, sigData, offset) {
-    var cWidth = cCtx.canvas.width;
-    var cHeight = cCtx.canvas.height;
-    cCtx.clearRect(0, 0, cWidth, cHeight);
-
+function rasterOscilloscope (canvasCtx, sigData, offset) {
+    var cWidth = canvasCtx.canvas.width;
+    var cHeight = canvasCtx.canvas.height;
     halfHeight = Math.floor(cHeight/2);
+
+    canvasCtx.clearRect(0, 0, cWidth, cHeight);
+
     // draw origin
-    cCtx.strokeStyle = '#eeeeee';
-    cCtx.beginPath();
-    cCtx.moveTo(0, halfHeight);
-    cCtx.lineTo(cWidth, halfHeight);
-    cCtx.stroke();
+    canvasCtx.strokeStyle = '#eeeeee';
+    canvasCtx.beginPath();
+    canvasCtx.moveTo(0, halfHeight);
+    canvasCtx.lineTo(cWidth, halfHeight);
+    canvasCtx.stroke();
 
     // draw signal
-    cCtx.strokeStyle = '#FF0000';
+    canvasCtx.strokeStyle = '#FF0000';
     for (var x=0; x<cWidth-1; x++) {
-        cCtx.beginPath();
+        canvasCtx.beginPath();
         var y1 = Math.floor((1 - sigData[x + offset]) * halfHeight);
         var y2 = Math.floor((1 - sigData[x + offset + 1]) * halfHeight);
-        cCtx.moveTo(x, y1);
-        cCtx.lineTo(x+1, y2);
-        cCtx.stroke();
+        canvasCtx.moveTo(x, y1);
+        canvasCtx.lineTo(x+1, y2);
+        canvasCtx.stroke();
     }
 }
 
